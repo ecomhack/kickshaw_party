@@ -1,0 +1,145 @@
+<% include header %>
+<script type="text/javascript">
+  /* ===================================
+               foodpairing
+  =================================== */
+  var get_all_generators = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all generators / foodpairing");
+        console.dir(data);
+        for(var i = 0; i < data.length; i++) {
+          get_all_targets(data[i].name);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_all_targets = function(type){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all targets / foodpairing");
+        console.dir(data);
+        for(var j = 0; j < data.length; j++) {
+          get_all_structures(type, data[j].id);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_all_structures = function(type, id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets/" + id + "/structures",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all structures / foodpairing");
+        console.dir(data);
+        for(var k = 0; k < data.length; k++) {
+          $(".selection").append($('<option>', {
+            text: data[k].name,
+            class: 'option_'+ k
+          }));
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  /* ===================================
+                sphereio
+  =================================== */
+  var get_product = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + token.project_key + "/product-projections/search",
+      headers: {
+        "Authorization": "Bearer " + token.access_token
+      },
+
+      success: function(data){
+        console.log("product / sphere_io");
+        console.dir(data.results);
+        $.each(data.results, function(index, element) {
+          var price = element.masterVariant.prices[0].value.centAmount/100;
+
+          $(".selection").append($('<option>', {
+            text: element.name.de + ' - €' + price,
+            value: price*100,
+            class: 'option_'+ index
+          }));
+
+        });
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type " + type);
+      }
+    });
+  };
+
+  /* ===================================
+             utilities
+  =================================== */
+  function toObject(arr) {
+    var rv = {};
+    for (var i = 0; i < arr.length; ++i)
+      rv[i] = arr[i];
+    return rv;
+  }
+
+  /* ===================================
+              execution
+  =================================== */
+    $(document).ready(function(){
+      /*** foodpairing ***/
+      get_all_generators();
+
+      //for(var i = 0; i < generators.length; i++){
+          //get_all_targets(generators.name);
+        //}
+
+      /*** sphereio ***/
+      //get_product();
+
+
+    });
+  </script>
+</head>
+<body>
+<form method="post" action="/menu">
+  <select class="selection" name="ingredient">
+  </select>
+  <input type="submit" value="party">
+</form>
+
+<% include footer %>

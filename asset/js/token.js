@@ -1,0 +1,1 @@
+var token = { project_key: 'ecomhack-demo-78', access_token: 'VsLnkE90-sFdVq7OpKWzXYpa2IiYo-Ax' }

@@ -1,0 +1,531 @@
+<% include header %>
+<script type="text/javascript">
+/*
+  var taboo_list = [
+    {id: '0', name: 'name0'},
+    {id: '1', name: 'name1'},
+    {id: '2', name: 'name2'}
+  ];
+
+  $.each(taboo_list, function(index, element) {
+    var id = element.id;
+    var name = element.name;
+
+    console.log(id +","+ name);
+    //$(".taboo-list").append('Some text');
+    $(".filter-taboo-list").append('<label><input type="checkbox" name="'+ name +'" value="'+ id +'">' + name +'</label>');
+  });
+*/
+  /* ===================================
+               foodpairing
+  =================================== */
+  var get_all_generators = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all generators / foodpairing");
+        console.dir(data);
+        for(var i = 0; i < data.length; i++) {
+          get_all_targets(data[i].name);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_all_targets = function(type){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all targets / foodpairing");
+        console.dir(data);
+        for(var j = 0; j < data.length; j++) {
+          get_all_structures(type, data[j].id);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_all_structures = function(type, id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets/" + id + "/structures",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all structures / foodpairing");
+        console.dir(data);
+        for(var k = 0; k < data.length; k++) {
+          $(".selection").append($('<option>', {
+            text: data[k].name,
+            class: 'option_'+ k
+          }));
+          $(".menu").append('<div id="menu-' + k +'" class="menu-item"></div>');
+          $("#menu-" + k).append('<h2>' + data[k].name + '</h2>');
+          $("#menu-" + k).append('<img class="menu-item-img" src="' + "" + '" alt=""/>'); // data[k].img
+          $("#menu-" + k).append('<div class="menu-item-btn" id="menu-btn-' + k + '"></div>');
+          //$("#menu-btn-" + k).append('<button class="minus-btn">-</button>');
+          $("#menu-btn-" + k).append('<input class="menu-amount" type="number" value="1" maxlength="3" size="3">');
+          //$("#menu-btn-" + k).append('<button class="plus-btn">+</button>');
+          $("#menu-btn-" + k).append('<button class="add-cart-btn">add cart</button>');
+          //click event
+          /*
+          //TODO: plus mins btn
+          $("#menu-btn-" + k + " .minus-btn").click(function(){
+            console.log('minus');
+          });
+
+          $("#menu-btn-" + k + " .plus-btn").click(function(){
+              console.log('plus');
+          });
+          */
+
+          //TODO: 値を取得
+          $("#menu-btn-" + k + " .add-cart-btn").click(function(){
+              var oldval = $("#menu-btn-" + k + " .menu-amount").val();
+              //var val = (oldval) || 0;
+              console.log(oldval);
+              console.log('add-cart ' + '2');
+              update_cart(cart_id, 'addLineItem', puroductId);
+          });
+
+
+
+          get_all_elements(type, id, data[k].id);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_all_elements = function(type, id, structure_id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets/" + id + "/structures/"+ structure_id +"/elements",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all elements / foodpairing");
+        //console.dir(data);
+        for (var l = 0; l < data.length; l++) {
+          // $(".selection").append($('<option>', {
+          //   text: data[l].name,
+          //   class: 'option_'+ l,
+          //   'data-id': data[l].id
+          // }));
+          //console.log("name: " + data[l].name);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_ingredients_by_elementid = function(type, target_id, element_id) {
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/generators/" + type + "/targets/" + target_id + "elements/" + element_id + "/ingredients",
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("all elements / foodpairing");
+        //console.dir(data);
+        for (var l = 0; l < data.length; l++) {
+          console.log("name: " + data[l].name);
+        }
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  //structures = menu?
+  // var get_menu = function(){
+  //   $.ajax({
+  //     type: 'GET',
+  //     url: "https://api.foodpairing.com/generators/salad/targets?include=structures,structures%5Belements%5D",
+  //     headers: {
+  //       "X-Application-ID": "ec05d5d3",
+  //       "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+  //     },
+
+  //     success: function(data){
+  //       console.log("menu / foodpairing");
+  //       //console.dir(data);
+  //       var recipe = data[0]._links.structures[0];
+  //       //console.log(recipe);
+  //       $(".menu-appetizer-item-title").html(recipe.name);
+
+  //       var ingredients = recipe._links.elements;
+  //       for (var i = 0; i < ingredients.length; i++){
+  //         // $(".menu-appetizer-item").append($('<p>',{
+  //         //   text: ingredients[i].name
+  //         // }));
+
+  //         // search_product(ingredients[i].name);
+  //       };
+  //     },
+  //     error: function(xhr, type, exception) {
+  //       // if ajax fails display error alert
+  //       alert("ajax error response type "+type);
+  //     }
+  //   });
+  // };
+
+  var get_ingredient_info = function(ingredient_id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.foodpairing.com/ingredients/" + ingredient_id,
+      headers: {
+        "X-Application-ID": "ec05d5d3",
+        "X-Application-Key": "55c949b646227173b8f99df6cbae8e08"
+      },
+
+      success: function(data){
+        console.log("ingredient / foodpairing");
+        var img_url = data._links.image.src;
+        console.log("ing_id: "+ data.id);
+        console.log("ing_name: " + data.name);
+        console.log("ing_img: " + img_url);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  /* ===================================
+                sphereio
+  =================================== */
+  var project_key = 'ecomhack-demo-78';
+  var access_token = 'VsLnkE90-sFdVq7OpKWzXYpa2IiYo-Ax';
+  var cart_id = '';
+  // sphereio - carts
+  //TODO: maybe post?
+  var create_cart = function(){
+    var datapath = {currency: 'EUR'};
+    $.ajax({
+      type: 'POST',
+      url: "https://api.sphere.io/" + project_key + "/carts",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      dataType: 'json',
+      data: JSON.stringify(datapath),
+      success: function(data){
+        console.log("create carts / sphereio");
+        console.dir(data);
+        cart_id = data.id;
+        get_cart(data.id);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_cart = function(id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + project_key + "/carts/" + id,
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      success: function(data){
+        console.log("get carts / sphereio");
+        console.dir(data);
+        $(".cart-total-price").text("€ " +data.totalPrice.centAmount/100)
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type " + type);
+      }
+    });
+  };
+
+  var update_cart = function(id, action){
+
+    var datapath = {action: action};
+
+    $.ajax({
+      type: 'POST',
+      url: "https://api.sphere.io/" + project_key + "/carts/" + id,
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      dataType: 'json',
+      data: JSON.stringify(datapath),
+      success: function(data){
+
+        get_cart(id);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var check_cart = function(){
+    console.log("check cart");
+  };
+
+  var buy_cart = function(){
+    console.log("buy cart");
+  };
+
+  // category
+  var get_category = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + project_key + "/categories",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      data: {
+        //'where':,
+        'limit': 0
+      },
+      success: function(data){
+        console.log("category list / sphereio");
+        console.dir(data);
+        return data;
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  }
+  var category_list = get_category();
+
+  var search_product = function(query){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + project_key + "/product-projections",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      data: {
+        'text.de': query,
+        'staged': true,
+        'limit': 10
+      },
+      success: function(data){
+        console.log("search / sphereio");
+        console.dir(data);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var search_product_by_category = function(category_id){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + project_key + "/product-projections",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      data: {
+        'categories.id': category_id,
+        'staged': true,
+        'limit': 10
+      },
+      success: function(data){
+        console.log("search by category / sphereio");
+        console.dir(data);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_product = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + token.project_key + "/product-projections/search",
+      headers: {
+        "Authorization": "Bearer " + token.access_token
+      },
+
+      success: function(data){
+        console.log("product / sphere_io");
+        console.dir(data.results);
+        $.each(data.results, function(index, element) {
+          var price = element.masterVariant.prices[0].value.centAmount/100;
+
+          $(".selection").append($('<option>', {
+            text: element.name.de,
+            value: price*100,
+            class: 'option_'+ index
+          }));
+        });
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+
+  var get_message = function(){
+    $.ajax({
+      type: 'GET',
+      url: "https://api.sphere.io/" + project_key + "/messages",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      },
+      data: {
+        'limit': 10
+      },
+      success: function(data){
+        console.log("messages / sphereio");
+        console.dir(data);
+      },
+      error: function(xhr, type, exception) {
+        // if ajax fails display error alert
+        alert("ajax error response type "+type);
+      }
+    });
+  };
+  /* ===================================
+             utilities
+  =================================== */
+
+  /* ===================================
+              execution
+  =================================== */
+  $(document).ready(function(){
+    //get_product();
+    var cart_id = create_cart();
+
+    //search_product("milch");
+    get_all_generators();
+    //get_ingredient_info(4243);
+    $( ".selection" ).change(function() {
+      var element_id = "";
+      $( "select option:selected" ).each(function() {
+        element_id += $( this ).attr('data-id') + " ";
+        //get_ingredients_by_elementid = function(salad, '122', element_id);
+      });
+    })
+    .change();
+  });
+
+
+</script>
+</head>
+<body>
+<div class="filetr">
+  <div class="filter-title">
+    <form method="post" action="/menu">
+      <select class="selection" name="ingredient">
+      </select>
+      <input type="submit" value="party">
+    </form>
+  </div><!-- /.filter-title -->
+<!--
+  <div class="filter-price">
+    <p class="filter-price-title">price</p>
+    <div class="filter-price-gage"></div>
+    <div class="filter-price-min"></div>
+    <div class="filter-price-max"></div>
+    <div class="filter-price-bar"></div>
+  </div>
+-->
+<!-- /.filter-price -->
+  
+  <div class="filter-taboo">
+    <p class="filter-taboo-title">taboo</p>
+    <div class="filter-taboo-list">
+      <label><input type="checkbox" name="poke" value="00">Poke</label>
+      <label><input type="checkbox" name="beef" value="01">Beef</label>
+      <label><input type="checkbox" name="chicken" value="02">Chicken</label>
+      <label><input type="checkbox" name="mutton" value="03">Mutton</label>
+      <label><input type="checkbox" name="name" value="04">name</label>
+      <label><input type="checkbox" name="name" value="05">name</label>
+      <label><input type="checkbox" name="name" value="06">name</label>
+      <label><input type="checkbox" name="name" value="07">name</label>
+      <label><input type="checkbox" name="name" value="08">name</label>
+    </div>
+    </div>
+  </div><!-- /.filter-taboo -->
+
+</div>
+
+<div class="menu">
+  <h2 class="menu-title"></h2>
+  <!--
+  <div class="menu-appetizer">
+    <h2 class="menu-appetizer-title">Appetizer</h2>
+    <div class="menu-appetizer-item">
+      <p class="menu-appetizer-item-title">menu-title</p>
+      <img src="https://d9gkwhfwam31p.cloudfront.net/0483303/21414669_webansicht.png" alt="test">
+      <button class="menu-item-buton-minus">-</button>
+      <input class="menu-item-amount" type="number" value="1" maxlength="3">
+      <button class="menu-item-buton-puls">+</button>
+      <button class="menu-item-addcard">add</button>
+    </div>
+  </div>
+  <div class="menu-main">
+    <h2 class="menu-main-title">Main</h2>
+  </div>
+  <div class="menu-dessert">
+    <h2 class="menu-dessert-title">Dessert</h2>
+  </div>
+  <div class="menu-drink">
+    <h2 class="menu-drink-title">Drink</h2>
+  </div>
+  -->
+</div>
+
+<div class="cart">
+  <div class="cart-process">
+    <p><span class="cart_active">Cart</span> > Your Info > Shipping</p>
+  </div>
+  <h3 class="cart-total-price"></h3>
+</div>
+
+<% include footer %>

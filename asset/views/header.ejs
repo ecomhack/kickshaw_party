@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>kickshaw party</title>
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+  <!--
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  -->
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+  <script type="text/javascript">
+    // token
+    var token = { project_key: 'ecomhack-demo-78', access_token: 'VsLnkE90-sFdVq7OpKWzXYpa2IiYo-Ax' }
+  </script>
+  <script type="text/javascript">
+    (function() {
+      (function($, window) {
+        var Hello, document;
+        document = window.document;
+        Hello = (function() {
+          function Hello(options) {
+            this._options = options;
+          }
+
+          Hello.prototype.getProducts = function(callback) {
+            return $.ajax({
+              url: "https://api.sphere.io/" + this._options.project_key + "/product-projections",
+              type: "GET",
+              headers: {
+                "Authorization": "Bearer " + this._options.access_token
+              },
+              success: (function(_this) {
+                return function(data, textStatus, jqXHR) {
+                  return callback(void 0, data);
+                };
+              })(this),
+              error: (function(_this) {
+                return function(xhr, textStatus) {
+                  return callback(xhr, void 0);
+                };
+              })(this)
+            });
+          };
+
+          return Hello;
+
+        })();
+        return window.Hello = Hello;
+      })(jQuery, window);
+
+    }).call(this);
+  </script>
+    <style>
+    p, a, label, input {
+      font-family: 'Lucida Grande', 'ヒラギノ角ゴ ProN W3', "Hiragino Kaku Gothic ProN", 'メイリオ', Meiryo, sans-serif;
+    }
+
+    .background-img {
+      position: absolute;
+      z-index: -100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+    }
+
+    .filter-price {
+      position: relative;
+      height: 40px;
+    }
+    .filter-price-gage {
+      position: absolute;
+      display: block;
+      background-color: #DDD;
+      top: 30px;
+      width: 300px;
+      height: 10px;
+    }
+    .filter-price-min {
+      position: absolute;
+      display: block;
+      background-color: #FFF;
+      border: 1px #000 solid;
+      top: 17.5px;
+      width: 15px;
+      height: 15px;
+      border-radius: 7.5px;
+      -webkit-border-radius: 7.5px;
+
+    }
+    .filter-price-max {
+      position: absolute;
+      display: block;
+      background-color: #FFF;
+      border: 1px #000 solid;
+      top: 17.5px;
+      left: 300px;
+      width: 15px;
+      height: 15px;
+      border-radius: 7.5px;
+      -webkit-border-radius: 7.5px;
+    }
+    .filter-price-bar {
+
+    }
+
+    .menu h2 {
+      font-family: 'Lucida Grande', 'ヒラギノ角ゴ ProN W3', "Hiragino Kaku Gothic ProN", 'メイリオ', Meiryo, sans-serif;
+    }
+
+    .menu-item {
+      position: relative;
+      display: block;
+      width: 300px;
+      height: 400px;
+      margin: 30px;
+      padding: 20px;
+      background-color: #EEE;
+    }
+
+    .menu-item-img {
+      position: relative;
+      display: block;
+      width: 240px;
+      height: 240px;
+      margin: 20px;
+      padding: 0px;
+      background-color: #CCC;
+    }
+
+    .cart_active {
+      color: red;
+    }
+  </style>
